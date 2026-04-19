@@ -1,0 +1,735 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:wght@400;600&display=swap');
+
+  :root {
+    --z-blue: #387ED1;
+    --z-blue-light: #EBF2FC;
+    --a-orange: #E85D1A;
+    --a-orange-light: #FEF0E8;
+    --red: #D63B3B;
+    --red-light: #FDEAEA;
+    --green: #1E8A54;
+    --green-light: #E8F5EE;
+    --amber: #B87B0A;
+    --amber-light: #FDF6E3;
+    --ink: var(--color-text-primary);
+    --muted: var(--color-text-secondary);
+    --surface: var(--color-background-secondary);
+    --card: var(--color-background-primary);
+    --border: var(--color-border-tertiary);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body, .root { font-family: var(--font-sans); color: var(--ink); }
+
+  .root { padding: 0 0 48px; }
+
+  /* Nav pills */
+  .nav { display: flex; gap: 6px; flex-wrap: wrap; padding: 20px 0 28px; border-bottom: 0.5px solid var(--border); margin-bottom: 32px; }
+  .nav-pill { font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border); cursor: pointer; background: var(--card); color: var(--muted); transition: all .2s; }
+  .nav-pill:hover { border-color: var(--z-blue); color: var(--z-blue); }
+  .nav-pill.active { background: var(--z-blue); border-color: var(--z-blue); color: #fff; }
+
+  /* Sections */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Page title */
+  .page-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; line-height: 1.2; margin-bottom: 6px; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+  /* App badge */
+  .app-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-kite { background: var(--z-blue-light); color: var(--z-blue); }
+  .badge-coin { background: #EEF0FD; color: #5457C8; }
+  .badge-angel { background: var(--a-orange-light); color: var(--a-orange); }
+  .badge-groww { background: #E8F3E8; color: #2C7A2C; }
+  .badge-bad { background: var(--red-light); color: var(--red); }
+  .badge-good { background: var(--green-light); color: var(--green); }
+  .badge-warn { background: var(--amber-light); color: var(--amber); }
+
+  /* Cards */
+  .card { background: var(--card); border: 0.5px solid var(--border); border-radius: var(--border-radius-lg); padding: 20px; margin-bottom: 16px; }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+  .card-title { font-size: 14px; font-weight: 500; }
+  .card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* Heuristic items */
+  .heuristic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .h-item { border: 0.5px solid var(--border); border-radius: var(--border-radius-md); padding: 16px; }
+  .h-item.fail { border-left: 3px solid var(--red); }
+  .h-item.warn { border-left: 3px solid #E8A020; }
+  .h-item.pass { border-left: 3px solid var(--green); }
+  .h-label { font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .h-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .h-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* Journey map */
+  .journey { display: flex; align-items: flex-start; gap: 0; overflow-x: auto; padding-bottom: 8px; }
+  .j-step { display: flex; flex-direction: column; align-items: center; min-width: 90px; flex: 1; }
+  .j-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+  .j-dot.app-switch { background: var(--red); color: #fff; }
+  .j-dot.normal { background: var(--z-blue-light); color: var(--z-blue); }
+  .j-dot.action { background: var(--green-light); color: var(--green); }
+  .j-line { flex: 1; height: 1.5px; background: var(--border); margin-top: 14px; width: 100%; }
+  .j-label { font-size: 10px; color: var(--muted); text-align: center; margin-top: 6px; max-width: 80px; line-height: 1.3; }
+  .j-app { font-size: 9px; font-weight: 500; text-align: center; margin-top: 3px; }
+
+  .j-row { display: flex; align-items: center; margin-bottom: 6px; }
+  .j-row-label { font-size: 11px; font-weight: 500; width: 64px; flex-shrink: 0; color: var(--muted); }
+
+  /* Stat bar */
+  .stat-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .stat { background: var(--surface); border-radius: var(--border-radius-md); padding: 14px 16px; }
+  .stat-num { font-size: 28px; font-weight: 500; font-family: 'DM Mono', monospace; }
+  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .stat.red .stat-num { color: var(--red); }
+  .stat.green .stat-num { color: var(--green); }
+  .stat.blue .stat-num { color: var(--z-blue); }
+
+  /* Comparison table */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .comp-table th { text-align: left; font-weight: 500; padding: 8px 12px; border-bottom: 0.5px solid var(--border); color: var(--muted); font-size: 11px; }
+  .comp-table td { padding: 10px 12px; border-bottom: 0.5px solid var(--border); vertical-align: top; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table .feature { font-weight: 500; color: var(--ink); }
+
+  /* Screen flow */
+  .flow { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+  .flow-screen { background: var(--surface); border: 0.5px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 11px; font-weight: 500; text-align: center; }
+  .flow-screen.switch { background: var(--red-light); border-color: #F5BBBB; color: var(--red); }
+  .flow-arrow { color: var(--muted); font-size: 12px; }
+
+  /* MoSCoW */
+  .moscow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .moscow-col { border: 0.5px solid var(--border); border-radius: var(--border-radius-md); padding: 16px; }
+  .moscow-title { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 10px; }
+  .moscow-col.must .moscow-title { color: var(--red); }
+  .moscow-col.should .moscow-title { color: var(--amber); }
+  .moscow-col.could .moscow-title { color: var(--z-blue); }
+  .moscow-col.wont .moscow-title { color: var(--muted); }
+  .moscow-item { font-size: 12px; color: var(--muted); padding: 5px 0; border-bottom: 0.5px solid var(--border); line-height: 1.4; }
+  .moscow-item:last-child { border-bottom: none; }
+
+  /* KPI table */
+  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .kpi { background: var(--surface); border-radius: var(--border-radius-md); padding: 14px; }
+  .kpi-name { font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+  .kpi-target { font-size: 11px; color: var(--green); font-family: 'DM Mono', monospace; }
+  .kpi-base { font-size: 11px; color: var(--muted); }
+
+  /* User story */
+  .story { border: 0.5px solid var(--border); border-radius: var(--border-radius-md); padding: 14px 16px; margin-bottom: 10px; }
+  .story-role { font-size: 10px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--z-blue); margin-bottom: 4px; }
+  .story-text { font-size: 13px; line-height: 1.5; color: var(--ink); }
+  .story-ac { font-size: 11px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 0.5px solid var(--border); line-height: 1.5; }
+
+  /* Before/After */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+  .ba-col { border-radius: var(--border-radius-md); padding: 16px; }
+  .ba-col.before { background: var(--red-light); border: 0.5px solid #F5C0C0; }
+  .ba-col.after { background: var(--green-light); border: 0.5px solid #B8DFC8; }
+  .ba-title { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 10px; }
+  .ba-col.before .ba-title { color: var(--red); }
+  .ba-col.after .ba-title { color: var(--green); }
+  .ba-item { font-size: 12px; padding: 4px 0; color: var(--ink); }
+
+  /* Severity pill */
+  .sev { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
+  .sev-3 { background: var(--red-light); color: var(--red); }
+  .sev-2 { background: var(--amber-light); color: var(--amber); }
+  .sev-1 { background: var(--green-light); color: var(--green); }
+
+  .divider { border: none; border-top: 0.5px solid var(--border); margin: 24px 0; }
+
+  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+  @media (max-width: 500px) {
+    .heuristic-grid, .ba-grid, .moscow, .kpi-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="root">
+  <div class="page-title">Zerodha Kite + Coin — UX Audit & Redesign</div>
+  <div class="page-sub">Heuristic Evaluation · Journey Map · Competitive Analysis · Redesign Proposal · PRD</div>
+
+  <nav class="nav">
+    <div class="nav-pill active" onclick="showSection('problem')">1. Problem</div>
+    <div class="nav-pill" onclick="showSection('audit')">2. UX Audit</div>
+    <div class="nav-pill" onclick="showSection('journey')">3. Journey Map</div>
+    <div class="nav-pill" onclick="showSection('competitive')">4. Competitive Analysis</div>
+    <div class="nav-pill" onclick="showSection('redesign')">5. Redesign</div>
+    <div class="nav-pill" onclick="showSection('prd')">6. PRD / BRD</div>
+  </nav>
+
+  <!-- SECTION 1: PROBLEM -->
+  <div class="section active" id="s-problem">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">The core friction</div>
+          <div class="card-sub">One demat account, two separate apps, two broken mental models</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">
+        A Zerodha user has a single demat account — one identity, one PAN, one broker. Yet to invest in the two most common asset classes, they must operate two completely separate apps:
+        <strong style="color:var(--ink)"> Kite</strong> for stocks/ETFs and <strong style="color:var(--ink)">Coin</strong> for mutual funds. Every other major broker in India — Angel One, Groww, Upstox — solved this with a unified experience years ago.
+      </div>
+      <div class="stat-bar">
+        <div class="stat red"><div class="stat-num">2</div><div class="stat-label">Apps needed for basic portfolio</div></div>
+        <div class="stat red"><div class="stat-num">2×</div><div class="stat-label">Separate portfolio views</div></div>
+        <div class="stat blue"><div class="stat-num">1</div><div class="stat-label">Demat account behind both</div></div>
+        <div class="stat green"><div class="stat-num">∞</div><div class="stat-label">Opportunity for unified UX</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">User story: The two-app tax</div>
+      <div style="font-size:13px;line-height:1.7;color:var(--muted);">
+        Rohan is a 28-year-old software engineer who invests monthly. He has ₹5,000 to invest — ₹3,000 into HDFC Bank shares and ₹2,000 into a Parag Parikh Flexi Cap SIP. On Angel One, this is one session, one search bar, two transactions in under 3 minutes. On Zerodha, he must open Kite for the stock, find the right price, place the order — then <em>switch to Coin</em>, log context again in his head, search the fund, set the SIP, invest. Two apps, two separate portfolio screens. He never sees his true net wealth in one place.
+      </div>
+      <div class="pill-row">
+        <span class="app-badge badge-kite">Kite: stocks only</span>
+        <span class="app-badge badge-coin">Coin: MF only</span>
+        <span class="app-badge badge-bad">No unified portfolio view</span>
+        <span class="app-badge badge-bad">No cross-product search</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">What Angel One does right (reference point)</div>
+      <div style="font-size:13px;line-height:1.7;color:var(--muted);">
+        Angel One offers a single home screen with tabs for Stocks, F&O, Mutual Funds, Loans, and FD. The global search bar returns results from all asset classes. Portfolio shows holdings across equities and MFs in one scrollable view. Day's P&L is calculated across the whole account. The invest flow never requires an app switch.
+      </div>
+      <div class="pill-row">
+        <span class="app-badge badge-angel">Angel One: unified</span>
+        <span class="app-badge badge-good">Single app</span>
+        <span class="app-badge badge-good">Unified portfolio</span>
+        <span class="app-badge badge-good">Global search</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: UX AUDIT -->
+  <div class="section" id="s-audit">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+      Evaluated against Nielsen's 10 Usability Heuristics. Each issue is rated Severity 1 (minor) to Severity 3 (blocks task completion).
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">H1 — Visibility of system status</div></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="app-badge badge-kite">Kite</span>
+          <span class="sev sev-2">Sev 2</span>
+        </div>
+      </div>
+      <div class="heuristic-grid">
+        <div class="h-item fail">
+          <div class="h-label">Finding</div>
+          <div class="h-title">MF order status lives in Coin, not Kite</div>
+          <div class="h-desc">After placing a stock order in Kite, the user has no idea a pending MF order (₹1,000 in Parag Parikh) exists. Two separate order screens across two apps prevent a unified status view.</div>
+        </div>
+        <div class="h-item warn">
+          <div class="h-label">Finding</div>
+          <div class="h-title">Processing state with no ETA</div>
+          <div class="h-desc">Coin shows "Processing" on pending orders but gives no estimated settlement timeline. Users are left uncertain whether their investment has gone through.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">H2 — Match between system and real world</div></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="app-badge badge-coin">Coin</span>
+          <span class="sev sev-3">Sev 3</span>
+        </div>
+      </div>
+      <div class="heuristic-grid">
+        <div class="h-item fail">
+          <div class="h-label">Critical finding</div>
+          <div class="h-title">Mental model mismatch: same account, different world</div>
+          <div class="h-desc">Users think of their "Zerodha portfolio" as one thing. The system splits it across two apps with no visual or navigational connection. This breaks the user's mental model of their wealth.</div>
+        </div>
+        <div class="h-item warn">
+          <div class="h-label">Finding</div>
+          <div class="h-title">Coin's discover section feels orphaned</div>
+          <div class="h-desc">Coin's "Explore" screen (Equity, Debt, Hybrid categories) has a completely different design language from Kite's watchlist, despite being the same brand. Users must re-learn navigation patterns.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">H4 — Consistency and standards</div></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="app-badge badge-kite">Kite</span>
+          <span class="app-badge badge-coin">Coin</span>
+          <span class="sev sev-3">Sev 3</span>
+        </div>
+      </div>
+      <div class="heuristic-grid">
+        <div class="h-item fail">
+          <div class="h-label">Critical finding</div>
+          <div class="h-title">Duplicate search — entirely separate systems</div>
+          <div class="h-desc">Kite has a watchlist search for stocks (34/250 items tracked). Coin has a separate "Search 3000+ mutual funds" bar. There is no cross-search — a user cannot type "HDFC" and see both HDFC Bank stock and HDFC Flexi Cap Fund.</div>
+        </div>
+        <div class="h-item fail">
+          <div class="h-label">Critical finding</div>
+          <div class="h-title">Portfolio tab means two different things</div>
+          <div class="h-desc">Kite's Portfolio tab shows equity holdings with P&L. Coin's Portfolio shows MF holdings. Neither shows total wealth. Users must mentally add up values across apps to know their net position.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">H6 — Recognition over recall</div></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="app-badge badge-kite">Kite</span>
+          <span class="sev sev-2">Sev 2</span>
+        </div>
+      </div>
+      <div class="heuristic-grid">
+        <div class="h-item warn">
+          <div class="h-label">Finding</div>
+          <div class="h-title">Kite can search MF names but not invest from them</div>
+          <div class="h-desc">A user who types "Parag Parikh" in Kite will find the fund. Tapping it prompts them to open Coin. This creates a false start — recognition of the fund fails to complete the task, forcing recall of a second app.</div>
+        </div>
+        <div class="h-item pass">
+          <div class="h-label">Positive finding</div>
+          <div class="h-title">Kite's buy flow is well-designed</div>
+          <div class="h-desc">The "slide to buy" mechanic with OTP confirmation is intentional friction — it prevents accidental trades. This is a strong pattern worth preserving in any redesign.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div><div class="card-title">H8 — Aesthetic and minimalist design</div></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="app-badge badge-coin">Coin</span>
+          <span class="sev sev-1">Sev 1</span>
+        </div>
+      </div>
+      <div class="heuristic-grid">
+        <div class="h-item warn">
+          <div class="h-label">Finding</div>
+          <div class="h-title">Coin's SIPs tab hides active investment status</div>
+          <div class="h-desc">The SIPs tab shows 1 active SIP but users must navigate into it to confirm it's active. The home state doesn't surface upcoming SIP deduction dates or recent processing confirmations.</div>
+        </div>
+        <div class="h-item pass">
+          <div class="h-label">Positive finding</div>
+          <div class="h-title">Coin's dark UI is clean and readable</div>
+          <div class="h-desc">Coin's dark-mode-first design with clear hierarchy (fund name → amount → status) is well-executed within its isolated context. The visual design quality is high.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: JOURNEY MAP -->
+  <div class="section" id="s-journey">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">Task: Invest ₹5,000 — split between a stock and a SIP</div>
+          <div class="card-sub">Current state — Zerodha (Kite + Coin)</div>
+        </div>
+        <span class="sev sev-3">12 steps · 1 app switch</span>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:500;color:var(--muted);margin-bottom:12px;letter-spacing:.04em;text-transform:uppercase;">Current flow — Zerodha</div>
+        <div class="flow">
+          <div class="flow-screen">Open Kite</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Watchlist</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Search stock</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Tap stock</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Swipe up</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Select NSE/BSE</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Enter qty</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Slide to buy</div><div class="flow-arrow">›</div>
+          <div class="flow-screen switch">⚡ Switch to Coin</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Search fund</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">SIP/Lumpsum</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Set amount</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Set date</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Invest</div>
+        </div>
+        <div style="display:flex;gap:20px;margin-top:12px;font-size:12px;flex-wrap:wrap;">
+          <span style="color:var(--red);">⚠ 1 mandatory app switch</span>
+          <span style="color:var(--muted);">14 total screens touched</span>
+          <span style="color:var(--muted);">~4–6 min estimated time</span>
+          <span style="color:var(--muted);">0 screens show combined wealth</span>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div>
+        <div style="font-size:11px;font-weight:500;color:var(--muted);margin-bottom:12px;letter-spacing:.04em;text-transform:uppercase;">Equivalent flow — Angel One</div>
+        <div class="flow">
+          <div class="flow-screen">Open Angel One</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Search: "HDFC Bank"</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Buy → qty → confirm</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Nav: Mutual Funds</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Search fund</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">SIP → amount → date</div><div class="flow-arrow">›</div>
+          <div class="flow-screen">Invest</div>
+        </div>
+        <div style="display:flex;gap:20px;margin-top:12px;font-size:12px;flex-wrap:wrap;">
+          <span style="color:var(--green);">✓ 0 app switches</span>
+          <span style="color:var(--muted);">7 screens touched</span>
+          <span style="color:var(--muted);">~2–3 min estimated time</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-col before">
+        <div class="ba-title">Current Zerodha — pain points</div>
+        <div class="ba-item">• 14 screens for a routine task</div>
+        <div class="ba-item">• Hard app-switch mid-session</div>
+        <div class="ba-item">• 2 separate portfolio views</div>
+        <div class="ba-item">• No combined P&L anywhere</div>
+        <div class="ba-item">• 2 separate search experiences</div>
+        <div class="ba-item">• Re-orient after app switch</div>
+      </div>
+      <div class="ba-col after">
+        <div class="ba-title">Proposed redesign — improvements</div>
+        <div class="ba-item">• 7 screens for same task</div>
+        <div class="ba-item">• Zero app switches required</div>
+        <div class="ba-item">• Unified portfolio + P&L</div>
+        <div class="ba-item">• Global search across all instruments</div>
+        <div class="ba-item">• Contextual invest prompt in search</div>
+        <div class="ba-item">• Consistent UI language throughout</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: COMPETITIVE ANALYSIS -->
+  <div class="section" id="s-competitive">
+    <div class="card" style="overflow-x:auto;">
+      <div class="card-title" style="margin-bottom:16px;">Feature matrix — major Indian brokers</div>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th><span class="app-badge badge-kite">Zerodha</span></th>
+            <th><span class="app-badge badge-angel">Angel One</span></th>
+            <th><span class="app-badge badge-groww">Groww</span></th>
+            <th>Upstox</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="feature">Single app for stocks + MF</td>
+            <td style="color:var(--red);">✗ Two apps</td>
+            <td style="color:var(--green);">✓</td>
+            <td style="color:var(--green);">✓</td>
+            <td style="color:var(--green);">✓</td>
+          </tr>
+          <tr>
+            <td class="feature">Global search (stocks + MF)</td>
+            <td style="color:var(--red);">✗ Separate</td>
+            <td style="color:var(--green);">✓</td>
+            <td style="color:var(--green);">✓</td>
+            <td style="color:var(--green);">✓</td>
+          </tr>
+          <tr>
+            <td class="feature">Unified portfolio view</td>
+            <td style="color:var(--red);">✗</td>
+            <td style="color:var(--green);">✓</td>
+            <td style="color:var(--green);">✓</td>
+            <td style="color:var(--amber);">Partial</td>
+          </tr>
+          <tr>
+            <td class="feature">Charting depth (stocks)</td>
+            <td style="color:var(--green);">Excellent</td>
+            <td style="color:var(--amber);">Good</td>
+            <td style="color:var(--amber);">Basic</td>
+            <td style="color:var(--amber);">Good</td>
+          </tr>
+          <tr>
+            <td class="feature">MF direct plan investing</td>
+            <td style="color:var(--green);">✓ (Coin)</td>
+            <td style="color:var(--green);">✓</td>
+            <td style="color:var(--green);">✓</td>
+            <td style="color:var(--amber);">Partial</td>
+          </tr>
+          <tr>
+            <td class="feature">F&O terminal quality</td>
+            <td style="color:var(--green);">Best in class</td>
+            <td style="color:var(--amber);">Good</td>
+            <td style="color:var(--red);">Basic</td>
+            <td style="color:var(--amber);">Good</td>
+          </tr>
+          <tr>
+            <td class="feature">Commission on MF</td>
+            <td style="color:var(--green);">₹0 direct</td>
+            <td style="color:var(--amber);">Regular plan</td>
+            <td style="color:var(--green);">₹0 direct</td>
+            <td style="color:var(--amber);">Regular plan</td>
+          </tr>
+          <tr>
+            <td class="feature">UI consistency</td>
+            <td style="color:var(--red);">Kite ≠ Coin</td>
+            <td style="color:var(--green);">Unified</td>
+            <td style="color:var(--green);">Unified</td>
+            <td style="color:var(--green);">Unified</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="heuristic-grid" style="gap:14px;">
+      <div class="card" style="margin:0;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span class="app-badge badge-angel">Angel One</span>
+          <span class="sev sev-1">Unified</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">
+          <strong style="color:var(--ink);display:block;margin-bottom:4px;">What works well</strong>
+          Global search, unified portfolio, single home screen with all asset tabs. MF screen shows trending SIPs, fund explorer, and Gold ETF promotions. The "Discover" tab surfaces investments contextually.
+        </div>
+        <hr class="divider" style="margin:12px 0;">
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">
+          <strong style="color:var(--ink);display:block;margin-bottom:4px;">Where it breaks</strong>
+          Charting is less powerful than Kite. F&O tooling is adequate but not professional-grade. The loan/FD tabs feel like cross-sell noise. Home screen feels busy — too many promotions.
+        </div>
+      </div>
+
+      <div class="card" style="margin:0;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span class="app-badge badge-groww">Groww</span>
+          <span class="sev sev-1">Unified</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">
+          <strong style="color:var(--ink);display:block;margin-bottom:4px;">What works well</strong>
+          Best consumer-grade design in Indian fintech. Unified home, clean search, excellent fund comparisons. SIP management is intuitive. Mutual fund discovery (curated lists, peer comparison) is the strongest in the market.
+        </div>
+        <hr class="divider" style="margin:12px 0;">
+        <div style="font-size:12px;color:var(--muted);line-height:1.6;">
+          <strong style="color:var(--ink);display:block;margin-bottom:4px;">Where it breaks</strong>
+          Stock charting is severely limited for active traders. Groww sacrifices depth for breadth. Power users (scalpers, options traders) will always prefer Kite. The unified approach hurts expert tooling.
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="card-title" style="margin-bottom:10px;">The design trade-off Zerodha must navigate</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;">
+        Zerodha's core competitive moat is <strong style="color:var(--ink);">Kite's professional-grade trading tools</strong> — charting, F&O depth, order types. Groww proved that unifying apps often means dumbing down for the median user. The redesign must <strong style="color:var(--ink);">add the unified MF layer without degrading Kite's power tools</strong>. The right model: a single app where the MF tab extends Kite's existing portfolio screen — not a full rebrand.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: REDESIGN -->
+  <div class="section" id="s-redesign">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:6px;">Focused redesign scope</div>
+      <div class="card-sub" style="margin-bottom:14px;">Unified portfolio view + "Invest Now" cross-product flow</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;">
+        Rather than redesigning all of Kite, the proposal is surgical: <strong style="color:var(--ink);">integrate Coin's MF functionality as a tab inside Kite's Portfolio screen</strong>, add a Mutual Funds section to Kite's Discover/search flow, and surface a unified wealth summary at the top of the Portfolio screen. Kite's trading tools are unchanged.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">Navigation redesign — bottom bar changes</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Current Kite bottom bar:</div>
+      <div class="flow" style="margin-bottom:16px;">
+        <div class="flow-screen">Watchlist</div>
+        <div class="flow-screen">Orders</div>
+        <div class="flow-screen">Portfolio</div>
+        <div class="flow-screen">Bids</div>
+        <div class="flow-screen">Account</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Proposed bottom bar (no new items — Portfolio expands):</div>
+      <div class="flow">
+        <div class="flow-screen">Watchlist</div>
+        <div class="flow-screen">Orders</div>
+        <div class="flow-screen" style="background:var(--z-blue-light);border-color:#B8D4F5;color:var(--z-blue);">Portfolio ★</div>
+        <div class="flow-screen">Bids</div>
+        <div class="flow-screen">Account</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-top:10px;">★ Portfolio now has three internal tabs: <strong style="color:var(--ink);">Holdings</strong> (equities, existing), <strong style="color:var(--ink);">Mutual Funds</strong> (Coin integrated), <strong style="color:var(--ink);">Overview</strong> (combined wealth, new)</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">Portfolio Overview screen — key elements</div>
+      <div style="background:var(--surface);border-radius:var(--border-radius-md);padding:16px;font-size:12px;color:var(--muted);line-height:1.8;font-family:'DM Mono',monospace;">
+        <div style="color:var(--ink);font-weight:500;font-size:14px;margin-bottom:12px;font-family:var(--font-sans);">Total portfolio value</div>
+        ₹ [equity holdings] + ₹ [MF current value]<br>
+        Day's P&L: [equity day change] — (MF: marked to NAV)<br>
+        <br>
+        <div style="color:var(--ink);font-weight:500;font-family:var(--font-sans);">Breakdown</div>
+        ████████░░  Equity: 68%<br>
+        ████░░░░░░  Mutual Funds: 32%<br>
+        <br>
+        <div style="color:var(--ink);font-weight:500;font-family:var(--font-sans);">Quick actions</div>
+        [Invest more →]  [View SIPs →]  [Tax summary →]
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">Unified search — the key unlock</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px;">
+        The global search bar in Kite's watchlist (currently "Search & add stocks") becomes an instrument-aware search. Typing "HDFC" returns a grouped result: HDFC Bank (NSE/BSE) under "Stocks" and HDFC Flexi Cap Fund under "Mutual Funds". The user never has to know or care which app hosts which asset class.
+      </div>
+      <div style="background:var(--surface);border-radius:var(--border-radius-md);padding:14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);">
+        🔍 HDFC<br><br>
+        <span style="color:var(--z-blue);font-weight:500;">STOCKS</span><br>
+        HDFCBANK — HDFC Bank Ltd · NSE ₹1,346.80 ▲<br>
+        HDFCAMC — HDFC Asset Management · NSE ₹2,792 ▲<br>
+        <br>
+        <span style="color:#5457C8;font-weight:500;">MUTUAL FUNDS</span><br>
+        HDFC Flexi Cap Fund — Direct Growth<br>
+        HDFC Mid-Cap Opportunities — Direct Growth
+      </div>
+    </div>
+
+    <div class="ba-grid">
+      <div class="ba-col before">
+        <div class="ba-title">Before redesign</div>
+        <div class="ba-item">• 14 screens for stock + SIP invest</div>
+        <div class="ba-item">• 1 mandatory app switch</div>
+        <div class="ba-item">• 2 separate portfolio screens</div>
+        <div class="ba-item">• 2 separate search flows</div>
+        <div class="ba-item">• No combined P&L visibility</div>
+        <div class="ba-item">• High cognitive load switching context</div>
+      </div>
+      <div class="ba-col after">
+        <div class="ba-title">After redesign</div>
+        <div class="ba-item">• 7 screens for same task (−50%)</div>
+        <div class="ba-item">• 0 app switches</div>
+        <div class="ba-item">• Portfolio Overview: combined wealth</div>
+        <div class="ba-item">• Single unified search</div>
+        <div class="ba-item">• Total P&L across instruments</div>
+        <div class="ba-item">• Kite's trading tools fully preserved</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: PRD -->
+  <div class="section" id="s-prd">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">User stories</div>
+
+      <div class="story">
+        <div class="story-role">US-01 — Active investor</div>
+        <div class="story-text">As a Zerodha user who invests in both stocks and mutual funds, I want to view my entire portfolio — equities and MFs — in a single screen, so I can understand my true net wealth without switching apps.</div>
+        <div class="story-ac">Acceptance criteria: Portfolio Overview tab shows combined current value, overall P&L, and asset allocation breakdown. Data refreshes on screen load. MF values use latest available NAV.</div>
+      </div>
+
+      <div class="story">
+        <div class="story-role">US-02 — Casual SIP investor</div>
+        <div class="story-text">As a Zerodha user who has set up a monthly SIP in Coin, I want to see my SIP status, next deduction date, and accumulated MF holdings inside Kite, so I don't need to switch to Coin just to check my SIP is active.</div>
+        <div class="story-ac">Acceptance criteria: Portfolio → Mutual Funds tab lists all SIPs with status, amount, and next deduction date. Users can pause or modify SIPs from this screen.</div>
+      </div>
+
+      <div class="story">
+        <div class="story-role">US-03 — New investor</div>
+        <div class="story-text">As a new Zerodha user exploring investment options, I want a single search bar that shows both stocks and mutual funds in results, so I can compare options without knowing in advance which app handles which asset type.</div>
+        <div class="story-ac">Acceptance criteria: Global search returns grouped results (Stocks / Mutual Funds sections). Result tap navigates to instrument detail; "Invest" CTA available on both. No redirect to external app.</div>
+      </div>
+
+      <div class="story">
+        <div class="story-role">US-04 — Power trader</div>
+        <div class="story-text">As an active equity trader who uses Kite for F&O, I want the unified MF features to be additive and not change my existing Kite workflows, so my trading efficiency is unaffected.</div>
+        <div class="story-ac">Acceptance criteria: Watchlist, chart, order placement, and F&O screens are identical to current Kite. MF features accessible only via Portfolio tab or search. No UI changes to core trading flow.</div>
+      </div>
+
+      <div class="story">
+        <div class="story-role">US-05 — Tax-aware investor</div>
+        <div class="story-text">As an investor approaching financial year-end, I want to see my equity STCG/LTCG and MF capital gains in one place, so I can make tax-aware decisions without logging into Console separately.</div>
+        <div class="story-ac">Acceptance criteria: Portfolio Overview includes a Tax Summary card showing estimated equity and MF capital gains for the current FY. Links to Console for detailed reports.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">KPIs & success metrics</div>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-name">Task completion rate</div>
+          <div class="kpi-target">Target: ≥ 85%</div>
+          <div class="kpi-base">Baseline: ~60% (users abandon mid-flow at app switch)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-name">Cross-product activation</div>
+          <div class="kpi-target">Target: +25% MF invest from Kite</div>
+          <div class="kpi-base">Baseline: 0% (no path exists today)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-name">Session depth (screens/session)</div>
+          <div class="kpi-target">Target: 6–9 screens</div>
+          <div class="kpi-base">Baseline: 4 Kite + 5 Coin = 9 across 2 apps</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-name">Coin app opens / month</div>
+          <div class="kpi-target">Monitor — expected decline</div>
+          <div class="kpi-base">Success = Kite MF orders rise proportionally</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-name">Portfolio tab engagement</div>
+          <div class="kpi-target">Target: +40% DAU on Portfolio tab</div>
+          <div class="kpi-base">Baseline: low (users check in Coin)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-name">Time-on-task reduction</div>
+          <div class="kpi-target">Target: ≤ 3 min for stock + SIP</div>
+          <div class="kpi-base">Baseline: ~5–6 min across both apps</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">MoSCoW requirements</div>
+      <div class="moscow">
+        <div class="moscow-col must">
+          <div class="moscow-title">Must have</div>
+          <div class="moscow-item">Unified Portfolio Overview tab with combined equity + MF value</div>
+          <div class="moscow-item">Mutual Funds tab in Kite Portfolio showing all holdings and SIPs</div>
+          <div class="moscow-item">Ability to invest in MF (lumpsum + SIP) from within Kite</div>
+          <div class="moscow-item">No degradation to existing Kite trading flows</div>
+          <div class="moscow-item">Real-time equity + latest NAV for combined P&L</div>
+        </div>
+        <div class="moscow-col should">
+          <div class="moscow-title">Should have</div>
+          <div class="moscow-item">Global search returning stocks + MF in unified results</div>
+          <div class="moscow-item">SIP modification (pause / amount change) from Kite</div>
+          <div class="moscow-item">Asset allocation donut chart on Overview screen</div>
+          <div class="moscow-item">Tax summary card (STCG/LTCG estimate for current FY)</div>
+          <div class="moscow-item">Push notifications for SIP deductions inside Kite</div>
+        </div>
+        <div class="moscow-col could">
+          <div class="moscow-title">Could have</div>
+          <div class="moscow-item">Goal-based investing wizard (retirement, house, education)</div>
+          <div class="moscow-item">Cross-instrument watchlist (stocks + MFs in same list)</div>
+          <div class="moscow-item">MF vs Stock performance comparison chart</div>
+          <div class="moscow-item">Liquidity score across portfolio (how quickly can you exit?)</div>
+          <div class="moscow-item">Consolidated account statement export from Kite</div>
+        </div>
+        <div class="moscow-col wont">
+          <div class="moscow-title">Won't have (v1)</div>
+          <div class="moscow-item">Full Coin app deprecation (maintain for existing deep-link users)</div>
+          <div class="moscow-item">F&O analytics changes (separate roadmap)</div>
+          <div class="moscow-item">NPS / bonds / FD integration in this release</div>
+          <div class="moscow-item">New charting engine for MF NAV (use existing Coin charts)</div>
+          <div class="moscow-item">Social/copy-trading features</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
